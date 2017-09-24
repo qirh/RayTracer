@@ -35,26 +35,18 @@ glm::dvec3 DirectionalLight::getDirection(const glm::dvec3& P) const
 double PointLight::distanceAttenuation(const glm::dvec3& P) const
 {
 
-	// YOUR CODE HERE
-
-	// You'll need to modify this method to attenuate the intensity
-	// of the light based on the distance between the source and the
-	// point P.  For now, we assume no attenuation and just return 1.0
-
-
-	double d =sqrt(pow((position[0]-P[0]), 2.0) + 
-		      	pow((position[1]-P[1]), 2.0) + 
-		      	pow((position[2]-P[2]), 2.0)
-		      	);
+	double d = glm::distance(position, P);
 	double d2 = pow(d, 2.0);
 
-	double att = 1/(constantTerm +
-			(linearTerm * d) +
-			(quadraticTerm * d2));
+	cout << "d = " << d << "\n";
+	cout << "d2 = " << d2 << "\n";
 
+	double att = 1 /	(	(constantTerm) +
+										  (linearTerm * d) +
+										  (quadraticTerm * d2)
+									  );
+  //cout << "att = " << att << "\n";
 	return min(att, 1.0);
-
-	//return 1.0;
 }
 
 glm::dvec3 PointLight::getColor() const
