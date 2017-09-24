@@ -42,7 +42,6 @@ double PointLight::distanceAttenuation(const glm::dvec3& P) const
 	// point P.  For now, we assume no attenuation and just return 1.0
 
 
-<<<<<<< HEAD
 	double d =sqrt(pow((position[0]-P[0]), 2.0) + 
 		      	pow((position[1]-P[1]), 2.0) + 
 		      	pow((position[2]-P[2]), 2.0)
@@ -56,9 +55,6 @@ double PointLight::distanceAttenuation(const glm::dvec3& P) const
 	return min(att, 1.0);
 
 	//return 1.0;
-=======
-	return 1.0;
->>>>>>> b407fc87b4345c3db82c871f3156ac34cb6f6a50
 }
 
 glm::dvec3 PointLight::getColor() const
