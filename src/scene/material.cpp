@@ -45,7 +45,8 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 	glm::dvec3 ambient_Term = ka(i) *( scene->ambient()); //ka * ki
 	
 	//get diffuse
-	glm::dvec3 diffuse_Term = kd(i);			//I * kd * max(L dot N , 0)
+	glm::dvec3 diffuse = kd(i);			//I * kd * max(L dot N , 0)
+	glm::dvec3 diffuse_Term = glm::dvec3(0,0,0);			//I * kd * max(L dot N , 0)
 	glm::dvec3 d_Intensity;
 	
 	//get specular
@@ -59,14 +60,6 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 	glm::dvec3 p  = r.at(i.t);
 
 
-	//Camera cam = scene->getCamera();
-	//glm::dvec3 view = cam.getEye();
-	//view = glm::normalize(view);
-
-
-
-
-
 	for ( vector<Light*>::const_iterator litr = scene->beginLights();
 		litr != scene->endLights(); ++litr )
 	{
@@ -74,18 +67,17 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 		glm::dvec3 lightDirection = pLight->getDirection(p);
 		glm::normalize(lightDirection);
 		glm::dvec3 colour = pLight -> getColor();
+		
 		d_Intensity = s_Intensity = colour;
 
 		double dAtten = pLight -> distanceAttenuation(p);
 
 		//get diffuse_term
 		for(int x = 0; x < 3; ++x){
-			diffuse_Term[x] += kd(i)[x] * max((glm::dot(lightDirection, N)), 0.0)* d_Intensity[x];
+			diffuse_Term[x] += diffuse[x] * max((glm::dot(lightDirection, N)), 0.0)* d_Intensity[x];
 		}
 
-
-
-		diffuse_Term =dAtten * diffuse_Term * max(glm::dot(lightDirection, N), 0.0);
+		diffuse_Term =diffuse_Term * dAtten;
 	}
 	return (emission + ambient_Term + diffuse_Term + specular_Term);
 }

@@ -160,12 +160,12 @@ class Material
 
 public:
     Material()
-        : _ke( glm::dvec3( 0.0, 0.0, 0.0 ) )
-        , _ka( glm::dvec3( 0.0, 0.0, 0.0 ) )
-        , _ks( glm::dvec3( 0.0, 0.0, 0.0 ) )
-        , _kd( glm::dvec3( 0.0, 0.0, 0.0 ) )
-        , _kr( glm::dvec3( 0.0, 0.0, 0.0 ) )
-        , _kt( glm::dvec3( 0.0, 0.0, 0.0 ) )
+        : _ke( glm::dvec3( 0.0, 0.0, 0.0 ) )  //emission
+        , _ka( glm::dvec3( 0.0, 0.0, 0.0 ) )  //ambient
+        , _ks( glm::dvec3( 0.0, 0.0, 0.0 ) )  //specular
+        , _kd( glm::dvec3( 0.0, 0.0, 0.0 ) )  //diffuse
+        , _kr( glm::dvec3( 0.0, 0.0, 0.0 ) )  //reflection
+        , _kt( glm::dvec3( 0.0, 0.0, 0.0 ) )  //transmission
 		, _refl(0)
 		, _trans(0)
         , _shininess( 0.0 ) 
