@@ -52,7 +52,7 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 	glm::dvec3 specular_Term = ks(i);			//ks * I * (R dot V)^n
 	glm::dvec3 s_Intensity;
 
-	glm::dvec3 vec_Empty = glm::dvec3(0,0,0);
+
 
 	glm::dvec3 reflection = kr(i);
 
@@ -79,10 +79,11 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 		for(int x = 0; x < 3; ++x){
 			diffuse_Term[x] += kd(i)[x] * max((glm::dot(lightDirection, N)), 0.0)* d_Intensity[x];
 		}
+		//glm::dvec3 vec_Empty = glm::dvec3(0,0,0);	//for debugging purposes
 
-		diffuse_Term =dAtten * diffuse_Term * max(glm::dot(lightDirection, N), 0.0);
+		diffuse_Term = dAtten * diffuse_Term; //* max(glm::dot(lightDirection, N), 0.0);
 	}
-	return (emission + ambient_Term + diffuse_Term + vec_Empty);
+	return (emission + ambient_Term + diffuse_Term + specular_Term);
 }
 
 TextureMap::TextureMap( string filename )
