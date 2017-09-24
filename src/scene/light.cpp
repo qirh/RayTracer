@@ -38,14 +38,9 @@ double PointLight::distanceAttenuation(const glm::dvec3& P) const
 	double d = glm::distance(position, P);
 	double d2 = pow(d, 2.0);
 
-	cout << "d = " << d << "\n";
-	cout << "d2 = " << d2 << "\n";
-
-	double att = 1 /	(	(constantTerm) +
-										  (linearTerm * d) +
-										  (quadraticTerm * d2)
-									  );
-  //cout << "att = " << att << "\n";
+	double att = 1 /((constantTerm) +
+			(linearTerm * d) +
+			(quadraticTerm * d2));
 	return min(att, 1.0);
 }
 

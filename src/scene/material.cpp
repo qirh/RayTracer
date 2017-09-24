@@ -78,13 +78,13 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 		d_Intensity = s_Intensity = colour;
 		double dAtten = pLight -> distanceAttenuation(p);
 
-		reflection = (2.0 * (lightDirection * N) * N) - lightDirection;
+		reflection = glm::dot(lightDirection, N) * N;
 		glm::normalize(reflection);
 
 		//udpate diffuse_term and specular_term
 		for(int x = 0; x < 3; ++x){
 			diffuse_Term[x] += diffuse[x] * max((glm::dot(lightDirection, N)), 0.0)* d_Intensity[x];
-			specular_Term[x]  += specular[x] * pow(max((glm::dot(view, reflection)), 0.0), shine) * s_Intensity[x];
+			specular_Term[x]  += specular[x] * pow(abs(glm::dot(view, reflection)), shine) * s_Intensity[x];
 		}
 
 		diffuse_Term =diffuse_Term * dAtten;
