@@ -43,14 +43,16 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 	glm::dvec3 emission = ke(i);
 
 	glm::dvec3 ambient_Term = ka(i) *( scene->ambient()); //ka * ki
-	
+
 	//get diffuse
 	glm::dvec3 diffuse_Term = kd(i);			//I * kd * max(L dot N , 0)
 	glm::dvec3 d_Intensity;
-	
+
 	//get specular
 	glm::dvec3 specular_Term = ks(i);			//ks * I * (R dot V)^n
 	glm::dvec3 s_Intensity;
+
+	glm::dvec3 vec_Empty = glm::dvec3(0,0,0);
 
 	glm::dvec3 reflection = kr(i);
 
@@ -63,12 +65,7 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 	//glm::dvec3 view = cam.getEye();
 	//view = glm::normalize(view);
 
-
-
-
-
-	for ( vector<Light*>::const_iterator litr = scene->beginLights();
-		litr != scene->endLights(); ++litr )
+	for ( vector<Light*>::const_iterator litr = scene->beginLights(); litr != scene->endLights(); ++litr )
 	{
 		Light* pLight = *litr;
 		glm::dvec3 lightDirection = pLight->getDirection(p);
@@ -83,11 +80,9 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 			diffuse_Term[x] += kd(i)[x] * max((glm::dot(lightDirection, N)), 0.0)* d_Intensity[x];
 		}
 
-
-
 		diffuse_Term =dAtten * diffuse_Term * max(glm::dot(lightDirection, N), 0.0);
 	}
-	return (emission + ambient_Term + diffuse_Term + specular_Term);
+	return (emission + ambient_Term + diffuse_Term + vec_Empty);
 }
 
 TextureMap::TextureMap( string filename )
@@ -106,8 +101,8 @@ TextureMap::TextureMap( string filename )
 glm::dvec3 TextureMap::getMappedValue( const glm::dvec2& coord ) const
 {
 	// YOUR CODE HERE
-	// 
-	// In order to add texture mapping support to the 
+	//
+	// In order to add texture mapping support to the
 	// raytracer, you need to implement this function.
 	// What this function should do is convert from
 	// parametric space which is the unit square
@@ -133,7 +128,7 @@ glm::dvec3 TextureMap::getPixelAt( int x, int y ) const
 
     // Find the position in the big data array...
     int pos = (y * width + x) * 3;
-    return glm::dvec3(double(data[pos]) / 255.0, 
+    return glm::dvec3(double(data[pos]) / 255.0,
        double(data[pos+1]) / 255.0,
        double(data[pos+2]) / 255.0);
 }
@@ -156,4 +151,3 @@ double MaterialParameter::intensityValue( const isect& is ) const
     else
         return (0.299 * _value[0]) + (0.587 * _value[1]) + (0.114 * _value[2]);
 }
-
