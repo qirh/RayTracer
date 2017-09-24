@@ -210,7 +210,6 @@ void RayTracer::traceImage(int w, int h, int bs, double thresh)
 
 	for(int i = 1; i <= w; ++i){
 		double perc = (double)i*100.0/(double)w;
-		cout << perc << "%"<< endl;
 		for(int j = 0; j < h; ++j){
 			tracePixel(i, j);
 		}
