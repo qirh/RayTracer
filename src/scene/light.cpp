@@ -72,15 +72,13 @@ glm::dvec3 PointLight::shadowAttenuation(const ray& r, const glm::dvec3& p) cons
 	double light_source = glm::distance(position, sh.getPosition());
 	double Q = glm::distance(iPos, sh.getPosition());
 
-	if(Q < light_source)
-		B = false;
-	if(B){
+	if(Q < light_source){
 		return glm::dvec3(0,0,0);
 	}
 	else
-		return glm::dvec3(-1,1,1);
+		return glm::dvec3(1,1,1);
 
-	return glm::dvec3(1,1,1);
+	//return glm::dvec3(1,1,1);
 }
 
 #define VERBOSE 0
