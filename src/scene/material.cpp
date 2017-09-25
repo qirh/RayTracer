@@ -60,7 +60,7 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
  	double shine = shininess(i);
 
 	glm::dvec3 reflection = glm::dvec3(0, 0, 0);
-	glm::dvec3 shadows = glm::dvec3(1, 1, 1);
+	//glm::dvec3 shadows = glm::dvec3(1, 1, 1);
 	glm::dvec3 shadow_attenuation = glm::dvec3(0, 0, 0);
 
 	glm::dvec3 N = i.N;
@@ -83,25 +83,21 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 		reflection = (glm::dot(lightDirection, N) * N * 2.0) - lightDirection;
 		glm::normalize(reflection);
 		shadow_attenuation = pLight->shadowAttenuation(r, p);
-		if(shadow_attenuation[0] != 1){
-			shadows = shadow_attenuation;
-		}
-
 
 		//udpate diffuse_term and specular_term
 		for(int x = 0; x < 3; ++x){
 			diffuse_Term[x] += 
-			diffuse[x] * max((glm::dot(lightDirection, N)), 0.0)* d_Intensity[x] * shadows[x];
+			diffuse[x] * max((glm::dot(lightDirection, N)), 0.0)* d_Intensity[x] * shadow_attenuation[x];
 			
 			specular_Term[x]  += 
-			specular[x] * pow(max(glm::dot(view, reflection), 0.0), shine) * s_Intensity[x] * shadows[x];
+			specular[x] * pow(max(glm::dot(view, reflection), 0.0), shine) * s_Intensity[x] * shadow_attenuation[x];
 		}
 
 		diffuse_Term =diffuse_Term * dAtten;
 		specular_Term = specular_Term * dAtten;
 
 		//reset shadows cuz they be messing up
-		shadows = glm::dvec3(1, 1, 1);
+		//shadows = glm::dvec3(1, 1, 1);
 
 	}
 	return (emission + ambient_Term + diffuse_Term + specular_Term);
