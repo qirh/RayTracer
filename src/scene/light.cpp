@@ -63,22 +63,18 @@ glm::dvec3 PointLight::shadowAttenuation(const ray& r, const glm::dvec3& p) cons
 
 	isect I = isect();
 	glm::dvec3 d = glm::normalize(position - p);
-	ray sh = ray(p, d, r.getPixel(), r.getAtten(), ray::SHADOW);
+	ray shad = ray(p, d, r.getPixel(), r.getAtten(), ray::SHADOW);
 
+	glm::dvec3 iPos = shad.at(I.t);
 
-	bool B = scene -> intersect(sh, I);
-	glm::dvec3 iPos = sh.at(I.t);
-
-	double light_source = glm::distance(position, sh.getPosition());
-	double Q = glm::distance(iPos, sh.getPosition());
+	double light_source = glm::distance(position, shad.getPosition());
+	double Q = glm::distance(iPos, shad.getPosition());
 
 	if(Q < light_source){
 		return glm::dvec3(0,0,0);
 	}
-	else
-		return glm::dvec3(1,1,1);
 
-	//return glm::dvec3(1,1,1);
+	return glm::dvec3(1,1,1);
 }
 
 #define VERBOSE 0
