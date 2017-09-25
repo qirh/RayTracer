@@ -59,6 +59,27 @@ glm::dvec3 PointLight::shadowAttenuation(const ray& r, const glm::dvec3& p) cons
 {
 	// YOUR CODE HERE:
 	// You should implement shadow-handling code here.
+
+
+	isect I = isect();
+	glm::dvec3 d = glm::normalize(position - p);
+	ray sh = ray(p, d, r.getPixel(), r.getAtten(), ray::SHADOW);
+
+
+	bool B = scene -> intersect(sh, I);
+	glm::dvec3 iPos = sh.at(I.t);
+
+	double light_source = glm::distance(position, sh.getPosition());
+	double Q = glm::distance(iPos, sh.getPosition());
+
+	if(Q < light_source)
+		B = false;
+	if(B){
+		return glm::dvec3(0,0,0);
+	}
+	else
+		return glm::dvec3(-1,1,1);
+
 	return glm::dvec3(1,1,1);
 }
 
