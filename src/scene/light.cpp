@@ -73,7 +73,7 @@ glm::dvec3 PointLight::shadowAttenuation(const ray& r, const glm::dvec3& p) cons
 
 	isect I = isect();
 	glm::dvec3 d = getDirection(p);
-	//glm::normalize(position - p);
+	glm::normalize(d);
 	ray shadow_ray = ray(p, d, r.getPixel(), r.getAtten(), ray::SHADOW);
 
 	glm::dvec3 iPos = shadow_ray.at(I.t);

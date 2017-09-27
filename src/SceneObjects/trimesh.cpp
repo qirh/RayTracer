@@ -109,7 +109,7 @@ bool TrimeshFace::intersectLocal(ray& r, isect& i) const
     double t = -(glm::dot(n, r.getPosition())
                  + dist) / (glm::dot(n, r.getDirection()));
     
-    if(t < 0) return false; 
+    if(t < RAY_EPSILON) return false; 
 
     glm::dvec3 p = r.at(t);
     glm::dvec3 v0 = b - a;
@@ -117,7 +117,6 @@ bool TrimeshFace::intersectLocal(ray& r, isect& i) const
     glm::dvec3 v2 = p - a;
 
     //Christer Ericon's Real-Time Collision Detection: http://gamedev.stackexchange.com/a/23745
-    //using to test if i'm doing this right cuz i haven't noticed a single change in functinality.
     double d00 = glm::dot(v0, v0);
     double d01 = glm::dot(v0, v1);
     double d11 = glm::dot(v1, v1);
@@ -131,11 +130,13 @@ bool TrimeshFace::intersectLocal(ray& r, isect& i) const
 
     if((v + w > 1.0) || v < 0 || w < 0) return false;
 
-
-    i.setT(t);
     i.setBary(u, v, w);
+    i.setT(t);
     i.setN(n);
     i.setObject(this);
+
+    if(parent->materials.empty()) i.setMaterial(getMaterial());
+    else i.setMaterial(*parent->materials[ids[0]]);
 
 
     return true;
