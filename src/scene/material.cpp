@@ -50,11 +50,9 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 
 	//get diffuse
 	glm::dvec3 diffuse = kd(i);			//I * kd * max(L dot N , 0)
-	glm::dvec3 diffuse_Term = glm::dvec3(0,0,0);			//I * kd * max(L dot N , 0)
 
 	//get specular
 	glm::dvec3 specular = ks(i);
-	glm::dvec3 specular_Term = glm::dvec3(0,0,0);			//ks * I * (R dot V)^n
 
  	glm::dvec3 view = scene->getCamera().getEye() - p;
  	view = glm::normalize(view);

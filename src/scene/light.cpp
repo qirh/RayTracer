@@ -19,7 +19,17 @@ glm::dvec3 DirectionalLight::shadowAttenuation(const ray& r, const glm::dvec3& p
 {
 	// YOUR CODE HERE:
 	// You should implement shadow-handling code here.
-	return glm::dvec3(1.0, 1.0, 1.0);
+
+	isect i = isect();
+	glm::dvec3 d = getDirection(p);
+	glm::normalize(d);
+	ray shadow_ray = ray(p, d, r.getPixel(), r.getAtten(), ray::SHADOW);
+
+	if(scene -> intersect(shadow_ray, i)){
+		Material mat = i.getMaterial();
+		return glm::dvec3(0,0,0) + mat.kt(i);
+	}
+	else return color;
 }
 
 glm::dvec3 DirectionalLight::getColor() const
