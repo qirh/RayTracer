@@ -39,6 +39,10 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 	// like this:
 	//
 
+	glm::dvec3 p  = r.at(i.t);
+	glm::dvec3 N = i.N;
+	glm::normalize(N);
+
 	//init shades
 	glm::dvec3 emission = ke(i);
 
@@ -47,25 +51,20 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 	//get diffuse
 	glm::dvec3 diffuse = kd(i);			//I * kd * max(L dot N , 0)
 	glm::dvec3 diffuse_Term = glm::dvec3(0,0,0);			//I * kd * max(L dot N , 0)
-	glm::dvec3 d_Intensity;
 
 	//get specular
 	glm::dvec3 specular = ks(i);
 	glm::dvec3 specular_Term = glm::dvec3(0,0,0);			//ks * I * (R dot V)^n
-	glm::dvec3 s_Intensity;
 
-	Camera mCamera = scene->getCamera();
- 	glm::dvec3 view = mCamera.getEye();
+ 	glm::dvec3 view = scene->getCamera().getEye() - p;
  	view = glm::normalize(view);
  	double shine = shininess(i);
 
 	glm::dvec3 reflection = glm::dvec3(0, 0, 0);
-	//glm::dvec3 shadows = glm::dvec3(1, 1, 1);
 	glm::dvec3 shadow_attenuation = glm::dvec3(0, 0, 0);
 
-	glm::dvec3 N = i.N;
-	glm::normalize(N);
-	glm::dvec3 p  = r.at(i.t);
+	glm::vec3 phong = emission + ambient_Term;
+
 
 
 	for ( vector<Light*>::const_iterator litr = scene->beginLights();
@@ -75,32 +74,20 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 		Light* pLight = *litr;
 		glm::dvec3 lightDirection = pLight->getDirection(p);
 		glm::normalize(lightDirection);
-		glm::dvec3 colour = pLight -> getColor();
-		
-		d_Intensity = s_Intensity = colour;
-		double dAtten = pLight -> distanceAttenuation(p);
+
+		double distance_atten = pLight -> distanceAttenuation(p);
 
 		reflection = (glm::dot(lightDirection, N) * N * 2.0) - lightDirection;
 		glm::normalize(reflection);
 		shadow_attenuation = pLight->shadowAttenuation(r, p);
-
-		//udpate diffuse_term and specular_term
-		for(int x = 0; x < 3; ++x){
-			diffuse_Term[x] += 
-			diffuse[x] * max((glm::dot(lightDirection, N)), 0.0)* d_Intensity[x] * shadow_attenuation[x];
-			
-			specular_Term[x]  += 
-			specular[x] * pow(max(glm::dot(view, reflection), 0.0), shine) * s_Intensity[x] * shadow_attenuation[x];
-		}
-
-		diffuse_Term =diffuse_Term * dAtten;
-		specular_Term = specular_Term * dAtten;
-
-		//reset shadows cuz they be messing up
-		//shadows = glm::dvec3(1, 1, 1);
-
+		glm::dvec3 intensity = distance_atten * shadow_attenuation;
+		
+		//if(glm::length(diffuse)!=0)
+			phong += diffuse * max((glm::dot(lightDirection, N)), 0.0) * intensity;
+		//if(glm::length(specular)!= 0)
+			phong += specular * pow(max(glm::dot(view, 	reflection), 0.0), shine) * intensity;
 	}
-	return (emission + ambient_Term + diffuse_Term + specular_Term);
+	return (phong);
 }
 
 TextureMap::TextureMap( string filename )
