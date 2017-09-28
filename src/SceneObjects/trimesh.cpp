@@ -124,19 +124,50 @@ bool TrimeshFace::intersectLocal(ray& r, isect& i) const
     double d21 = glm::dot(v2, v1);
 
     double denom = d00 * d11 - d01 * d01;
-    const double v = (d11 * d20 - d01 * d21) / denom;
-    const double w = (d00 * d21 - d01 * d20) / denom;
-    const double u = 1.0 - v - w;
+    double v = (d11 * d20 - d01 * d21) / denom;
+    double w = (d00 * d21 - d01 * d20) / denom;
+    double u = 1.0 - v - w;
 
     if((v + w > 1.0) || v < 0 || w < 0) return false;
 
+    glm::dvec3 baryCoords;
+    baryCoords[0] = u;
+    baryCoords[1] = v;
+    baryCoords[2] = w;
+
+    if(abs(u + v + w) <= (1 + RAY_EPSILON)){
+    	i.t = t;
+    	if(parent->vertNorms){
+    		glm::dvec3 normA = parent->normals[ids[0]];
+    		glm::dvec3 normB = parent->normals[ids[1]];
+    		glm::dvec3 normC = parent->normals[ids[2]];
+
+    		glm::dvec3 interp = (u * normA) + (v * normB) + (w * normC);
+    		i.setN(interp);
+    	}
+    	else
+    		i.setN(n);
+    }
+
+    if(parent -> materials.size() > 0){
+
+    		Material matA = *(parent -> materials[ids[0]]);
+    		Material matB = *(parent -> materials[ids[1]]);
+    		Material matC = *(parent -> materials[ids[2]]);
+
+    		Material final;
+    		final += (u * matA);
+    		final += (v*matB);
+    		final += (w*matC);
+    		i.setMaterial(final);
+    }
+    else
+    	i.setMaterial(parent->getMaterial());
+
     i.setBary(u, v, w);
     i.setT(t);
-    i.setN(n);
     i.setObject(this);
 
-    if(parent->materials.empty()) i.setMaterial(getMaterial());
-    else i.setMaterial(*parent->materials[ids[0]]);
 
 
     return true;
