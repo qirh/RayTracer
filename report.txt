@@ -1,0 +1,4 @@
+CS 354 - Fall 2017 - Project 1 Ray Tracer
+Work of: Saleh Alghusson (SOA322). Jesus Martinez ().
+
+Implemented:

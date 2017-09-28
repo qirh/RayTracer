@@ -95,10 +95,6 @@ glm::dvec3 RayTracer::traceRay(ray& r, const glm::dvec3& thresh, int depth, doub
 		// more steps: add in the contributions from reflected and refracted
 		// rays.
 
-		/*glm::dvec3 p = r.at(i.t);
-		glm::dvec3 d = -r.getDirection();
-		d = glm::normalize(d);
-		glm::dvec3 n = glm::normalize(i.N);*/
 
 
 		const Material& m = i.getMaterial();
