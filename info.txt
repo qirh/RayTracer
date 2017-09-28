@@ -1,0 +1,5 @@
+This project has been worked on by Saleh Alghusson (UTEID: soa322, Github: qirh) and Jesus Martinez (UTEID: , Github: jezze4).
+
+For CS 354 Computer Graphics taken in the fall of 2017 with Dr. Sarah Abraham.
+
+This file is being written for the first project in the course, the ray tracer.
