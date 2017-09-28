@@ -102,14 +102,15 @@ bool TrimeshFace::intersectLocal(ray& r, isect& i) const
 
     double dist = -(glm::dot(n, a));
 
+		if ((glm::dot(n, r.getDirection())) == 0) return false;
 
     /*  get from notes
     * t = - (n * P + d)/(n*D)
     */
     double t = -(glm::dot(n, r.getPosition())
                  + dist) / (glm::dot(n, r.getDirection()));
-    
-    if(t < RAY_EPSILON) return false; 
+
+    if(t < RAY_EPSILON) return false;
 
     glm::dvec3 p = r.at(t);
     glm::dvec3 v0 = b - a;
@@ -171,4 +172,3 @@ void Trimesh::generateNormals()
     delete [] numFaces;
     vertNorms = true;
 }
-
