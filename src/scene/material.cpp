@@ -45,13 +45,8 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 
 	//init shades
 	glm::dvec3 emission = ke(i);
-
 	glm::dvec3 ambient_Term = ka(i) *( scene->ambient()); //ka * ki
-
-	//get diffuse
 	glm::dvec3 diffuse = kd(i);			//I * kd * max(L dot N , 0)
-
-	//get specular
 	glm::dvec3 specular = ks(i);
 
  	glm::dvec3 view = scene->getCamera().getEye() - p;
@@ -80,9 +75,7 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 		shadow_attenuation = pLight->shadowAttenuation(r, p);
 		glm::dvec3 intensity = distance_atten * shadow_attenuation;
 		
-		//if(glm::length(diffuse)!=0)
 			phong += diffuse * max((glm::dot(lightDirection, N)), 0.0) * intensity;
-		//if(glm::length(specular)!= 0)
 			phong += specular * pow(max(glm::dot(view, 	reflection), 0.0), shine) * intensity;
 	}
 	return (phong);
