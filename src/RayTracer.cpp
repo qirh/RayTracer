@@ -99,6 +99,25 @@ glm::dvec3 RayTracer::traceRay(ray& r, const glm::dvec3& thresh, int depth, doub
 
 		const Material& m = i.getMaterial();
 		colorC = m.shade(scene.get(), r, i);
+
+		//if (depth == 0) return colorC;
+
+		//START REFLECTION
+		glm::dvec3 q = r.at(i.t);
+		glm::dvec3 N = i.N;
+		glm::dvec3 d = -1.0 * r.d ;
+
+		glm::dvec3 reflection = (glm::dot(d, N) * N) + r.d;
+		glm::normalize(reflection);
+
+		ray reflect_ray = ray(q, reflection, r.getPixel(), r.getAtten(), ray::REFLECTION);
+		std::cout << "Depth: " << depth << std::endl;
+
+		if(glm::length(m.kr(i))!=0 && depth < 10000){
+
+			colorC += m.kr(i) * traceRay(reflect_ray, thresh, depth+1, t);
+		}
+
 		return colorC;
 
 		

@@ -73,10 +73,12 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 		reflection = (glm::dot(lightDirection, N) * N * 2.0) - lightDirection;
 		glm::normalize(reflection);
 		shadow_attenuation = pLight->shadowAttenuation(r, p);
-		glm::dvec3 intensity = distance_atten * shadow_attenuation;
+		glm::dvec3 attenuation = distance_atten * shadow_attenuation;
 		
-			phong += diffuse * max((glm::dot(lightDirection, N)), 0.0) * intensity;
-			phong += specular * pow(max(glm::dot(view, 	reflection), 0.0), shine) * intensity;
+		if(glm::length(diffuse)!=0)	//reduce # of rays
+			phong += diffuse * max((glm::dot(lightDirection, N)), 0.0) * attenuation;
+		if(glm::length(specular)!= 0)	//reduce # of rays
+			phong += specular * pow(max(glm::dot(view, 	reflection), 0.0), shine) * attenuation;
 	}
 	return (phong);
 }
