@@ -106,7 +106,7 @@ glm::dvec3 RayTracer::traceRay(ray& r, const glm::dvec3& thresh, int depth, doub
 		}
 
 		//START REFLECTION
-			std::cout << "Depth: " << depth << std::endl;
+			//std::cout << "Depth: " << depth << std::endl;
 			/*std::cout << "i.t: " << i.t << std::endl;
 			std::cout << "r.at(i.t): " << r.at(i.t)[0] << ", " << r.at(i.t)[1] << ", " << r.at(i.t)[2] << std::endl;*/
 		glm::dvec3 q = r.at(i.t);
@@ -127,8 +127,9 @@ glm::dvec3 RayTracer::traceRay(ray& r, const glm::dvec3& thresh, int depth, doub
 
 
 		//START REFRACTION
-		f(glm::length(m.kt(i))!=0){
-				
+		if(glm::length(m.kt(i))!=0){
+			std::cout << "Needs refrction!" << std::endl;
+			double cos = acos(glm::dot(N, r.getDirection())) * 180/M_PI;
 		}
 
 		return colorC;
