@@ -23,11 +23,11 @@ glm::dvec3 DirectionalLight::shadowAttenuation(const ray& r, const glm::dvec3& p
 	isect i = isect();
 	glm::dvec3 d = getDirection(p);
 	glm::normalize(d);
-	ray shadow_ray = ray(p, d, r.getPixel(), r.getAtten(), ray::SHADOW);
+	ray shadow_ray = ray(p, d, nullptr, glm::dvec3(1,1,1), ray::SHADOW);
 
 	if(scene -> intersect(shadow_ray, i)){
 		Material mat = i.getMaterial();
-		return glm::dvec3(0,0,0) + mat.kt(i);
+		return glm::dvec3(0,0,0);
 	}
 	else return color;
 }
@@ -74,7 +74,7 @@ glm::dvec3 PointLight::shadowAttenuation(const ray& r, const glm::dvec3& p) cons
 	isect I = isect();
 	glm::dvec3 d = getDirection(p);
 	glm::normalize(d);
-	ray shadow_ray = ray(p, d, r.getPixel(), r.getAtten(), ray::SHADOW);
+	ray shadow_ray = ray(p, d, nullptr, glm::dvec3(1,1,1), ray::SHADOW);
 
 	glm::dvec3 iPos = shadow_ray.at(I.t);
 

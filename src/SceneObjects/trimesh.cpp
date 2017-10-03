@@ -94,6 +94,8 @@ bool TrimeshFace::intersectLocal(ray& r, isect& i) const
     //
     // FIXME: Add ray-trimesh intersection
 
+    std::cout << "calling IntersectLocal()" << std::endl;
+
     glm::dvec3 a = parent->vertices[ids[0]];
     glm::dvec3 b = parent->vertices[ids[1]];
     glm::dvec3 c = parent->vertices[ids[2]];
@@ -165,9 +167,12 @@ bool TrimeshFace::intersectLocal(ray& r, isect& i) const
     else
     	i.setMaterial(parent->getMaterial());
 
+    glm::dvec2 uv(u, v);
+
     i.setBary(u, v, w);
     i.setT(t);
     i.setObject(this);
+    i.setUVCoordinates(uv);
 
 
 

@@ -49,28 +49,30 @@ glm::dvec3 Material::shade(Scene *scene, const ray& r, const isect& i) const
 	glm::dvec3 diffuse = kd(i);			//I * kd * max(L dot N , 0)
 	glm::dvec3 specular = ks(i);
 
- 	glm::dvec3 view = scene->getCamera().getEye() - p;
- 	view = glm::normalize(view);
- 	double shine = shininess(i);
-
-	glm::dvec3 reflection = glm::dvec3(0, 0, 0);
-	glm::dvec3 shadow_attenuation = glm::dvec3(0, 0, 0);
+ 	
 
 	glm::vec3 phong = emission + ambient_Term;
 
 
-
 	for ( vector<Light*>::const_iterator litr = scene->beginLights();
-		litr != scene->endLights(); ++litr )
-
-	{
+		litr != scene->endLights(); ++litr ){
 		Light* pLight = *litr;
 		glm::dvec3 lightDirection = pLight->getDirection(p);
 		glm::normalize(lightDirection);
 
+
+		glm::dvec3 view = scene->getCamera().getEye();
+ 		view = glm::normalize(view);
+ 		double shine = shininess(i);
+
+		glm::dvec3 reflection = glm::dvec3(0, 0, 0);
+		glm::dvec3 shadow_attenuation = glm::dvec3(0, 0, 0);
+
+
 		double distance_atten = pLight -> distanceAttenuation(p);
 
-		reflection = (glm::dot(lightDirection, N) * N * 2.0) - lightDirection;
+		//reflection = (glm::dot(lightDirection, N) * N * 2.0) - lightDirection;
+		reflection = glm::reflect(-lightDirection, N);
 		glm::normalize(reflection);
 		shadow_attenuation = pLight->shadowAttenuation(r, p);
 		glm::dvec3 attenuation = distance_atten * shadow_attenuation;

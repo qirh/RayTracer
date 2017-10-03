@@ -99,23 +99,36 @@ glm::dvec3 RayTracer::traceRay(ray& r, const glm::dvec3& thresh, int depth, doub
 
 		const Material& m = i.getMaterial();
 		colorC = m.shade(scene.get(), r, i);
-
-		//if (depth == 0) return colorC;
+		//std::cout << "Depth: " << depth << std::endl;
+		if (depth <=0) {
+			//std::cout << "getDepth: " << traceUI->getDepth() << std::endl; 
+			return colorC;
+		}
 
 		//START REFLECTION
+			std::cout << "Depth: " << depth << std::endl;
+			/*std::cout << "i.t: " << i.t << std::endl;
+			std::cout << "r.at(i.t): " << r.at(i.t)[0] << ", " << r.at(i.t)[1] << ", " << r.at(i.t)[2] << std::endl;*/
 		glm::dvec3 q = r.at(i.t);
 		glm::dvec3 N = i.N;
-		glm::dvec3 d = -1.0 * r.d ;
+		glm::dvec3 d = -1.0 * r.getDirection();
+		glm::normalize(d);
 
-		glm::dvec3 reflection = (glm::dot(d, N) * N) + r.d;
+		//glm::dvec3 reflection = (glm::dot(d, N) * N * 2.0) - d;
+		glm::dvec3 reflection = glm::reflect(-d, N);
 		glm::normalize(reflection);
 
-		ray reflect_ray = ray(q, reflection, r.getPixel(), r.getAtten(), ray::REFLECTION);
-		std::cout << "Depth: " << depth << std::endl;
+		ray reflect_ray = ray(q, reflection, nullptr, glm::dvec3(1,1,1), ray::REFLECTION);
 
-		if(glm::length(m.kr(i))!=0 && depth < 10000){
+		if(glm::length(m.kr(i))!=0){
 
-			colorC += m.kr(i) * traceRay(reflect_ray, thresh, depth+1, t);
+			colorC += m.kr(i)*traceRay(reflect_ray, thresh, depth-1, t);
+		}
+
+
+		//START REFRACTION
+		f(glm::length(m.kt(i))!=0){
+				
 		}
 
 		return colorC;
@@ -129,8 +142,8 @@ glm::dvec3 RayTracer::traceRay(ray& r, const glm::dvec3& thresh, int depth, doub
 		// FIXME: Add CubeMap support here.
 
 		colorC = glm::dvec3(0.0, 0.0, 0.0);
+		return colorC;
 	}
-	return colorC;
 #if VERBOSE
 	std::cerr << "== depth: " << depth+1 << " done, returning: " << colorC << std::endl;
 #endif
@@ -223,9 +236,8 @@ void RayTracer::traceImage(int w, int h, int bs, double thresh)
 
 	traceSetup(w, h);
 
-	for(int i = 1; i <= w; ++i){
-		double perc = (double)i*100.0/(double)w;
-		for(int j = 0; j < h; ++j){
+	for(int i = 0; i <= w; ++i){
+		for(int j = 0; j <= h; ++j){
 			tracePixel(i, j);
 		}
 	}
