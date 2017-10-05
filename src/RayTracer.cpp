@@ -51,7 +51,7 @@ glm::dvec3 RayTracer::trace(double x, double y, unsigned char *pixel)
 }
 
 glm::dvec3 RayTracer::tracePixel(int i, int j)
-{	
+{
 
 	glm::dvec3 col(0,0,0);
 
@@ -101,7 +101,7 @@ glm::dvec3 RayTracer::traceRay(ray& r, const glm::dvec3& thresh, int depth, doub
 		colorC = m.shade(scene.get(), r, i);
 		//std::cout << "Depth: " << depth << std::endl;
 		if (depth <=0) {
-			//std::cout << "getDepth: " << traceUI->getDepth() << std::endl; 
+			//std::cout << "getDepth: " << traceUI->getDepth() << std::endl;
 			return colorC;
 		}
 
@@ -134,7 +134,7 @@ glm::dvec3 RayTracer::traceRay(ray& r, const glm::dvec3& thresh, int depth, doub
 
 		return colorC;
 
-		
+
 	} else {
 		// No intersection.  This ray travels to infinity, so we color
 		// it according to the background color, which in this (simple) case
@@ -158,7 +158,7 @@ RayTracer::RayTracer()
 
 RayTracer::~RayTracer()
 {
-	delete [] buffer; 
+	delete [] buffer;
 }
 
 void RayTracer::getBuffer( unsigned char *&buf, int &w, int &h )
@@ -246,8 +246,9 @@ void RayTracer::traceImage(int w, int h, int bs, double thresh)
 
 int RayTracer::aaImage(int samples, double aaThresh)
 {
-	// YOUR CODE HERE
-	// FIXME: Implement Anti-aliasing here
+	int aa_number = traceUI->getSuperSamples();
+
+	cout << "aa_number" << aa_number << endl;
 	return 0;
 }
 
@@ -272,4 +273,3 @@ void RayTracer::setPixel(int i, int j, glm::dvec3 color)
 	pixel[1] = (int)( 255.0 * color[1]);
 	pixel[2] = (int)( 255.0 * color[2]);
 }
-
